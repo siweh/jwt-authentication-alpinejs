@@ -1,0 +1,17 @@
+.quote {
+    background-color: limegreen;
+    border-radius : 0.5em;
+    padding: 1em;
+	margin-top:1em;
+	width: 25em;
+    text-align: center;
+}
+
+.content {
+	margin: 1em 0 1em 0;
+}
+
+.quoteApp {
+	margin: auto;
+	width: 50%;
+}
