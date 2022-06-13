@@ -5,15 +5,16 @@ const assert = require('assert');
 const fs = require('fs');
 require('dotenv').config()
 
-const API = require('./../api');
+const API = require('../api');
 const { default: axios } = require('axios');
 const app = express();
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const config = {
-	connectionString: process.env.DATABASE_URL || 'postgres://@localhost:5432/hearts_app',
+	connectionString: process.env.DATABASE_URL || 'postgres://siwe:siwe123@localhost:5432/hearts_app',
 	max: 30,
 	// ssl: { rejectUnauthorized : false}
 };
@@ -24,12 +25,12 @@ const db = pgp(config);
 API(app, db);
 
 describe('Hearts app', function(){
-    // before(async function () {
-	// 	this.timeout(5000);
-	// 	await db.none(`delete from love_user`);
-	// 	const commandText = fs.readFileSync('./sql/data.sql', 'utf-8');
-	// 	await db.none(commandText)
-	// });
+    before(async function () {
+		this.timeout(5000);
+		await db.none(`delete from love_user`);
+		const commandText = fs.readFileSync('./sql/data.sql', 'utf-8');
+		await db.none(commandText)
+	});
 
     it('should have a test method', async () => {
 
@@ -47,9 +48,21 @@ describe('Hearts app', function(){
 			.expect(200);
 
 		const users = response.body.data;
-		assert.equal(1, users.length);
+		assert.equal(5, users);
 
-	})
+	});
+
+	it('should be able to find loggedin user by username and password', async () => {
+		// change the code statement below
+
+		const response = await supertest(app)
+			.get('/api/login?username={$username}&hash_password={$hash_password}')
+			.expect(200);
+
+		const user = response.body.data;
+		assert.equal(1, user);
+
+	});
 
     // it('you should be able to add 2 Male & 3 Female garments', async () => {
 
@@ -65,11 +78,11 @@ describe('Hearts app', function(){
 
 	// 	assert.equal(13, maleResult.body.data.length)
 
-	// 	const femaleResult = await supertest(app).get(`/api/garments?gender=Female`);
-	// 	assert.equal(13, femaleResult.body.data.length)
+	// 	const usersResults = await supertest(app).get(`/api/`registration`);
+	// 	assert.equal(2, usersResults.body.data.length)
 
 	// 	await supertest(app)
-	// 		.post('/api/garment')
+	// 		.post('/api/registration')
 	// 		.send({
 	// 			username: 'Simmy',
 	// 			password: '123456',

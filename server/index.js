@@ -1,17 +1,23 @@
 const express = require('express');
-const supertest = require('supertest');
 const PgPromise = require("pg-promise");
-const bcrypt = require ('bcrypt');
+// const bodyParser = require('body-parser');
+const cors = require('cors');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 const API = require('./api');
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// app.use(bodyParser.json()) // for parsing application/json
+// app.use(bodyParser.urlencoded({ extended: true }))
+
 const config = {
-	connectionString: process.env.DATABASE_URL || 'postgres://@localhost:5432/hearts_app',
+	connectionString: process.env.DATABASE_URL || 'postgres://siwe:siwe123@localhost:5432/hearts_app',
 	max: 30,
 	// ssl: { rejectUnauthorized : false}
 };
@@ -21,8 +27,8 @@ const db = pgp(config);
 
 API(app, db);
 
-let port = process.env.port || 3000;
+let port = process.env.port || 3001;
 
 app.listen(port, function(){
-    console.log('App started on port: ', port);
+    console.log('Running for my life on: ', port);
 })

@@ -1,0 +1,15 @@
+language: node_js
+
+node_js:
+- 16.14.0
+
+env:
+- DATABASE_URL=postgresql://postgres@localhost:5432/hearts_app
+
+before_script:
+- npm install
+- psql -c 'create database hearts_app;' -U postgres
+- psql -U postgres -d hearts_app -a -f ./sql/love_user.sql
+
+services:
+- postgresql

@@ -3,12 +3,18 @@ import './quote.css'
 import Alpine from 'alpinejs'
 import LoveCounter from './love-counter';
 import Quotes from './quotes';
+import LoginApiEndpoint from './login';
+import RegisterApiEndpoint from './register';
  
 window.Alpine = Alpine
 
 Alpine.data('loveCounter', LoveCounter);
 
 Alpine.data('quoteApp', Quotes);
+
+Alpine.data('loginData', LoginApiEndpoint);
+
+Alpine.data('registerData', RegisterApiEndpoint);
 
 Alpine.start();
 
