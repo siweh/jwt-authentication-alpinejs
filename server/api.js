@@ -28,7 +28,11 @@ module.exports = function(app, db){
     });
 
     app.get('/api/love_user', async function(req, res){
-        const { username } = req.query;
+        const { token } = req.query;
+            const userdata = jwt.decode(token)
+            console.log(userdata);
+            const username = userdata.username
+            console.log(username);
         let userLoveCounter = [];
         const getUserLoveCounter = `select love_user from love_user where username = $1`
 
@@ -91,16 +95,16 @@ module.exports = function(app, db){
             }
 
             // const access_token = jwt.sign(get_user, process.env.ACCESS_TOKEN_SECRET);
-            // console.log(access_token);
+            console.log(get_user);
 
             // Create token
-    const token = jwt.sign(
-        { username: get_user.username},
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-          expiresIn: "2h",
-        }
-      );
+        const token = jwt.sign(
+            { username: get_user.username},
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+            expiresIn: "2h",
+            }
+        );
       // save user token
     //   get_user.token = token;
   
@@ -109,7 +113,7 @@ module.exports = function(app, db){
 
             res.json({
                 status: 'success',
-			    data: token
+			    data: {"token": token, "love_user": get_user.love_user}
 		    });
         }catch(error){
             console.log(error);
@@ -122,12 +126,15 @@ module.exports = function(app, db){
 
     app.put('/api/love_user', async function(req, res){
         try {
-            const { username } = req.body;
-            
+            const { token } = req.body;
+            const userdata = jwt.decode(token)
+            console.log(userdata);
+            const username = userdata.username
             console.log(username);
 
             await db.oneOrNone(`update love_user set love_user = love_user + 1 where username = $1`, [username]);
 
+            
             res.json({
                 status: 'success'
             })
