@@ -36,3 +36,18 @@ button {
 button:hover {
   background-color: #8f614f;
 }
+
+.message {
+	background-color: green;
+	height: 2em;
+	width: 10em;
+	color: white;
+	margin-bottom: 1em;
+	text-align:"center";
+	padding: 1em;
+	border-radius: 0.25em;
+  }
+  
+  .error {
+	background-color : crimson;
+  }

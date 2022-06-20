@@ -1,34 +1,21 @@
+import axios from "axios";
 export default function RegisterApiEndpoint() {
   return {
     init() {
-      this.registerApiEndpoint();
+    //   this.registerApiEndpoint();
     },
-    user: [],
     username: "",
     hash_password: "",
     email: "",
-    love_user: 0,
     registerApiEndpoint() {
-      fetch("/api/register"),
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            username: this.username,
-            hash_password: this.hash_password,
-            email: this.email,
-            love_user: this.love_user,
-          })
-            .then(function (res) {
-              console.log(res);
-            })
-            .catch(function (res) {
-              console.log(res);
-            }),
-        };
-    },
-  };
+            axios.post("http://localhost:3001/api/register", {
+        email: this.email,
+        hash_password: this.hash_password,
+        username: this.username
+        })
+        .then((response) => {
+        console.log(response);
+        });
+    }
+  }
 }

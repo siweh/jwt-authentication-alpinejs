@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "alpinejs": "^3.10.2",
+    "axios": "^0.27.2",
     "everyday-fun": "^1.1.0"
   }
 }

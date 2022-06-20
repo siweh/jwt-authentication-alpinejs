@@ -7,68 +7,130 @@
     <title>Vite App</title>
   </head>
   <body>
-    <!-- <div x-data=" login: false, register: false, , startUpPage: false"> -->
-      <div x-data="{ open: false, register: false, login: false, loveCounter: false, qoute: false }">
-        <div x-data="{}"  class="quoteApp" >
-          <br>
-          <h1 style="text-align: center;">Welcome To Hearts App</h1>
-          <br>
-          <h2 style="text-align: center;"> <b>Don't have an account? Register or Login below</b> 
+    <div
+      x-data="{ open: false, register: false, login: false, show_love_counter: false, show_login_registration: true, qoute: false, info_message: '',
+      error: false }"
+    >
+      <div x-data="loginData" class="quoteApp" x-show="show_login_registration = showLoginRegister()">    <!-- <div x-data=" login: false, register: false, , startUpPage: false"> -->
+
+        <br />
+        <h1 style="text-align: center">Welcome To Hearts App</h1>
+        <br />
+          <h2 style="text-align: center">
+            <b>Don't have an account? Register or Login below</b>
           </h2>
-          <br>
-          <button type="submit" class="registerBtn" @click="register = ! register">Register</button>
-          <br>
-          <br>
-          <button type="submit" class="loginBtn" @click="login = ! login">Login</button>
-        </div>
-        <div x-data="registerData" class="quoteApp" x-show="register">
-          <h1 style="text-align: center;">Please Register</h1>
-            <hr>
-            <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="email" id="email" x-model="users.email" required>
-            <label for="username"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="username" id="username" x-model="users.username" required>
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="hash_password" id="psw" x-model="users.hash_password" required>
-            <label for="password"><b>Repeat password</b></label>
-            <input type="text" placeholder="Repeat Password" name="password" id="hash_password" x-model="users.hash_password" required>
-            <hr>
-            <button type="submit" class="registerBtn" @click="registerApiEndpoint(), loveCounter = ! loveCounter" style="text-align: center;">Register</button>
+          <br />
+          <button
+            type="submit"
+            class="registerBtn"
+            @click="register = ! register, login = false"
+          >
+            Register
+          </button>
+          <br />
+          <br />
+          <button type="submit" class="loginBtn" @click="login = ! login, register = false">
+            Login
+          </button>
         
+      </div>
+      <div
+        class="message"
+        x-bind:class="error ? 'error' : ''"
+        x-text="info_message"
+        x-show="info_message != ''"
+        x-transition
+      ></div>
+      <div x-data="registerData" class="quoteApp" x-show="register">
+        <h1 style="text-align: center">Please Register</h1>
+        <hr />
+        <label for="email"><b>Email</b></label>
+        <input
+          type="text"
+          placeholder="Enter Email"
+          name="email"
+          id="email"
+          x-model="email"
+          required
+        />
+        <label for="username"><b>Username</b></label>
+        <input
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          id="username"
+          x-model="username"
+          required
+        />
+        <label for="psw"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="hash_password"
+          id="psw"
+          x-model="hash_password"
+          required
+        />
+        <hr />
+        <button
+          type="submit"
+          class="registerBtn"
+          @click="registerApiEndpoint(), show_login_registration = showLoginRegister(), show_love_counter = showLoveCounter()"
+          style="text-align: center"
+        >
+          Register
+        </button>
       </div>
       <div x-data="loginData" class="quoteApp" x-show="login">
-          <h1 style="text-align: center;">Please Login</h1>
-            <hr>
-            <label for="email"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="username" id="username" x-model="users.username" required>
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="hash_password" id="psw" x-model="users.hash_password" required>
-            <hr>
-            <button type="submit" class="loginBtn" @click="loginApiEndpoint(), loveCounter = ! loveCounter" style="text-align: center;">Login</button>
-        
+        <h1 style="text-align: center">Please Login</h1>
+        <hr />
+        <label for="email"><b>Username</b></label>
+        <input
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          id="username"
+          x-model="user.username"
+          required
+        />
+        <label for="psw"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="password"
+          id="psw"
+          x-model="user.password"
+          required
+        />
+        <hr />
+        <button
+          type="submit"
+          class="loginBtn"
+          @click="loginApiEndpoint(), show_login_registration = showLoginRegister(), show_love_counter = showLoveCounter()"
+          style="text-align: center"
+        >
+          Login
+        </button>
       </div>
-      <div x-data="loveCounter" class="quoteApp" x-show="open">
+      <div x-data="loveCounter" class="quoteApp" x-show="show_love_counter = showLoveCounter(), login = false">
         <h1>Show some heart</h1>
-        <div x-text="hearts()" >
-        </div>
+        <div x-text="hearts()"></div>
         <div>
-            <button @click="love" >Show 💟</button>
+          <button @click="love">Show 💟</button>
         </div>
       </div>
-  <div x-data="quoteApp"  class="quote quoteApp" x-show="open">
-      <h1>Quote App</h1>
-      <button @click="getQuote()">Next quote 📢</button>
-      <div>
-        <div x-text="quote.quote" class="content" ></div>
+      <div x-data="quoteApp" class="quote quoteApp" x-show="open">
+        <h1>Quote App</h1>
+        <button @click="getQuote()">Next quote 📢</button>
         <div>
-          <strong>by </strong><span x-text="quote.author"></span>
+          <div x-text="quote.quote" class="content"></div>
+          <div><strong>by </strong><span x-text="quote.author"></span></div>
         </div>
       </div>
     </div>
-    </div>
-    
-  <hr>
-  <div id="app"></div>
+
+    <hr />
+    <div id="app"></div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
