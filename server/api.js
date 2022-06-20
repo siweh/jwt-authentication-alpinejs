@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
+const jwt = require("jsonwebtoken");
 
 module.exports = function(app, db){
     app.get('/api/test', function(req, res){
@@ -8,6 +8,12 @@ module.exports = function(app, db){
             name: 'Siweh'
         });
     });
+
+    // app.get('/api/register', function(req, res){
+    //     res.json({
+    //         staus: 'success'
+    //     })
+    // });
 
     app.get('/api/users', async function(req, res){
         let users = [];
@@ -21,9 +27,23 @@ module.exports = function(app, db){
         });
     });
 
+    app.get('/api/love_user', async function(req, res){
+        const { username } = req.query;
+        let userLoveCounter = [];
+        const getUserLoveCounter = `select love_user from love_user where username = $1`
+
+        userLoveCounter = await db.one(getUserLoveCounter, [username]);
+
+        res.json({
+            data: userLoveCounter
+        });
+    });
+
     app.post('/api/register', async function(req, res){
         try {
-            const { username, email, hash_password, love_user } = req.body;
+            const { username, email, hash_password} = req.body;
+
+            const love_user = 0;
 
             const salt = await bcrypt.genSalt(saltRounds);
             const hash = await bcrypt.hash(hash_password, salt);
@@ -32,20 +52,13 @@ module.exports = function(app, db){
             await db.one(registered_users, [username, hash, love_user, email]);
             console.log(registered_users);
 
-            // if (registered_users.includes(username, email)){
-            //     res.json({
-            //         status: 'Username already exists',
-            //         message: 'Username already exists'
-            //     })
-            // }
-
             if (!username || !email || !hash_password || !love_user) {
                 res.json({
                     status: 'error',
                     message: 'Please fill all required fields.',
                 });
             }
-            
+
             res.json({
 				status: 'success',
                 message: 'successfully registered'
@@ -65,16 +78,41 @@ module.exports = function(app, db){
             //console.log(req.query);
             const { username, password } = req.query;
 
-            const get_user = await db.one(`select * from love_user where username = $1`, [username]);
-            console.log(get_user);
-            let results = await bcrypt.compare(password, [hash_password]);
-            console.log(results);
+            const get_user = await db.oneOrNone(`select * from love_user where username = $1`, [username]);
+            console.log(get_user.data);
+            if (get_user === null){
+                throw Error('User is not available');
+            }
+            let results = await bcrypt.compare(password, get_user.hash_password);
+            console.log({results});
+
+            if (!results){
+                throw Error('Invalid password');
+            }
+
+            // const access_token = jwt.sign(get_user, process.env.ACCESS_TOKEN_SECRET);
+            // console.log(access_token);
+
+            // Create token
+    const token = jwt.sign(
+        { username: get_user.username},
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "2h",
+        }
+      );
+      // save user token
+    //   get_user.token = token;
+  
+      // return new user
+    //   res.status(201).json(token);
 
             res.json({
                 status: 'success',
-			    data: get_user
+			    data: token
 		    });
         }catch(error){
+            console.log(error);
             res.json({
 				status: 'Can not find user',
 				error : error.stack
@@ -82,24 +120,33 @@ module.exports = function(app, db){
         }
     });
 
-    // app.post('/api/login/', async function(req, res){
+    app.put('/api/love_user', async function(req, res){
+        try {
+            const { username } = req.body;
+            
+            console.log(username);
+
+            await db.oneOrNone(`update love_user set love_user = love_user + 1 where username = $1`, [username]);
+
+            res.json({
+                status: 'success'
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    // app.put('/api/love_user', async function(req, res){
     //     try {
-    //         const { username, hash_password, love_user } = req.body;
+    //         const { love_counter, username } = req.body;
 
-    //         const hash = await bcrypt.hash(hash_password, 10)
-
-    //         const register_user = `insert into love_user(username, hash_password, love_user) values($1, $2, $3)`
-    //         await db.none(register_user, [username, hash, love_user]);
+    //         let get_love_counter = await db.oneOrNone(`update love_user set love_user = love_user - $1 where username = $2`, [love_counter, username]);
 
     //         res.json({
-	// 			status: 'success',
-	// 		});
+    //             data: get_love_counter
+    //         })
     //     } catch (error) {
     //         console.log(error);
-    //         res.json({
-	// 			status: 'error',
-	// 			error: error.message
-	// 		});
     //     }
     // });
 
