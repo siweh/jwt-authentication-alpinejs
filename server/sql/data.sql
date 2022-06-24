@@ -1,1 +1,1 @@
-INSERT INTO love_user(username, password, love_user, email) VALUES ('Simy', '1234567', 2, 'simy@gmail.com');
+INSERT INTO love_user(username, hash_password, love_user, email) VALUES ('Simy', '1234567', 2, 'simy@gmail.com');

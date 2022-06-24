@@ -16,7 +16,7 @@ export default function LoginApiEndpoint(){
            loginApiEndpoint(){
             const { username, password} = this.user;
                 if (!this.user.username && !this.user.password){
-                    this.info_message = 'Please fill in the required fields';
+                    this.info_message = 'Please fill in all the required fields';
                     this.error = true;
                 }else{
                     var url = `http://localhost:3001/api/login?username=${username}&password=${password}`
@@ -33,7 +33,7 @@ export default function LoginApiEndpoint(){
                                 localStorage.setItem('love_user', this.user.data.love_user);
                             }else{
                                 this.info_message = 'Incorrect username or password'
-                                this.error = false;
+                                this.error = true;
                             }
                         })
                         .catch(error => console.error(error))
@@ -48,7 +48,7 @@ export default function LoginApiEndpoint(){
                     return false
                 }
            },
-
+           
            showLoveCounter(){
                 const token = localStorage.getItem('token');
                 if (token === undefined || token === null){

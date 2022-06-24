@@ -9,11 +9,6 @@ module.exports = function(app, db){
         });
     });
 
-    // app.get('/api/register', function(req, res){
-    //     res.json({
-    //         staus: 'success'
-    //     })
-    // });
 
     app.get('/api/users', async function(req, res){
         let users = [];
@@ -62,6 +57,14 @@ module.exports = function(app, db){
                     message: 'Please fill all required fields.',
                 });
             }
+
+            // const token = jwt.sign(
+            //     { username: registered_users.username},
+            //     process.env.ACCESS_TOKEN_SECRET,
+            //     {
+            //     expiresIn: "2h",
+            //     }
+            // );
 
             res.json({
 				status: 'success',

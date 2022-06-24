@@ -75,5 +75,8 @@ export default function LoveCounter() {
             return true
         }
       },
+      logOut(){
+        localStorage.clear();
+    }
     }
 }

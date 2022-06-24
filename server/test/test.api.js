@@ -48,21 +48,21 @@ describe('Hearts app', function(){
 			.expect(200);
 
 		const users = response.body.data;
-		assert.equal(5, users);
+		assert.equal(1, users.length);
 
 	});
 
-	it('should be able to find loggedin user by username and password', async () => {
-		// change the code statement below
+	// it('should be able to find loggedin user by username and password', async () => {
+	// 	// change the code statement below
 
-		const response = await supertest(app)
-			.get('/api/login?username={$username}&hash_password={$hash_password}')
-			.expect(200);
+	// 	const response = await supertest(app)
+	// 		.get('/api/login?username={$username}&hash_password={$hash_password}')
+	// 		.expect(200);
 
-		const user = response.body.data;
-		assert.equal(1, user);
+	// 	const user = response.body.data;
+	// 	assert.equal(1, user);
 
-	});
+	// });
 
     // it('you should be able to add 2 Male & 3 Female garments', async () => {
 

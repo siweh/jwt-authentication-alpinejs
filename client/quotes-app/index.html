@@ -8,14 +8,25 @@
   </head>
   <body>
     <div
-      x-data="{ open: false, register: false, login: false, show_love_counter: false, show_login_registration: true, qoute: false, info_message: '',
-      error: false }"
+      x-data="{ open: false, register: false, login: false, show_love_counter: false, show_login_registration: true, qoute: false}"
     >
+    
       <div x-data="loginData" class="quoteApp" x-show="show_login_registration = showLoginRegister()">    <!-- <div x-data=" login: false, register: false, , startUpPage: false"> -->
 
         <br />
         <h1 style="text-align: center">Welcome To Hearts App</h1>
         <br />
+        <div>
+          <div
+        class="message"
+        x-bind:class="error ? 'error' : ''"
+        x-text="info_message"
+        x-show="info_message != ''"
+        x-transition
+      ></div>
+      <hr>
+        </div>
+        
           <h2 style="text-align: center">
             <b>Don't have an account? Register or Login below</b>
           </h2>
@@ -34,13 +45,7 @@
           </button>
         
       </div>
-      <div
-        class="message"
-        x-bind:class="error ? 'error' : ''"
-        x-text="info_message"
-        x-show="info_message != ''"
-        x-transition
-      ></div>
+      
       <div x-data="registerData" class="quoteApp" x-show="register">
         <h1 style="text-align: center">Please Register</h1>
         <hr />
@@ -81,7 +86,10 @@
           Register
         </button>
       </div>
+      <br>
+      
       <div x-data="loginData" class="quoteApp" x-show="login">
+        
         <h1 style="text-align: center">Please Login</h1>
         <hr />
         <label for="email"><b>Username</b></label>
@@ -106,7 +114,7 @@
         <button
           type="submit"
           class="loginBtn"
-          @click="loginApiEndpoint(), show_login_registration = showLoginRegister(), show_love_counter = showLoveCounter()"
+          @click="loginApiEndpoint(), show_login_registration = showLoginRegister(), show_love_counter = showLoveCounter(), info_message"
           style="text-align: center"
         >
           Login
@@ -118,6 +126,16 @@
         <div>
           <button @click="love">Show 💟</button>
         </div>
+        <hr>
+        <button
+          type="submit"
+          class="loginBtn"
+          @click="logOut()"
+          x-show="show_login_registration = showLoginRegister()"
+          style="text-align: center"
+        >
+          Logout
+        </button>
       </div>
       <div x-data="quoteApp" class="quote quoteApp" x-show="open">
         <h1>Quote App</h1>
